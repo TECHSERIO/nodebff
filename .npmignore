@@ -1,0 +1,10 @@
+
+# NodeJS
+node_modules/
+
+# Source/test files
+src/
+build/tests/
+
+# Maps
+build/*.js.map
