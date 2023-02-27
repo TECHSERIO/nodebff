@@ -1,0 +1,15 @@
+{
+    "frontends": {
+        "500": {
+            "address": "0.0.0.0",
+            "port": 8005,
+            "uri_path_prefix": "/",
+            "backend": "500"
+        }
+    },
+    "backends": {
+        "500": {
+            "require": "./backend.js"
+        }
+    }
+}

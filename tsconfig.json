@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "lib": [
+      "ES2020.Promise",
+      "DOM"
+    ],
+    "module": "commonjs",
+    "noImplicitAny": true,
+    "outDir": "build",
+    "rootDir": "src",
+    "sourceMap": true,
+    "target": "es2017",
+    "resolveJsonModule": true
+  },
+  "exclude": [
+    "node_modules"
+  ]
+}

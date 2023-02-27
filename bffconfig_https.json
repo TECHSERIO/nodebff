@@ -1,0 +1,57 @@
+{
+
+  "frontends": {
+    "ios_api": {
+      "address": "0.0.0.0",
+      "port": 8000,
+      "uri_path_prefix": "/api/v1/ios",
+      "backend": "ios_backend"
+    },
+    "android_api": {
+      "address": "0.0.0.0",
+      "port": 8000,
+      "uri_path_prefix": "/api/v1/android",
+      "backend": "android_backend"
+    },
+    "dummy_api": {
+      "address": "0.0.0.0",
+      "port": 8000,
+      "backend": "dummy_backend"
+    },
+    "file_api": {
+      "address": "0.0.0.0",
+      "port": 8001,
+      "backend": "proxied_http_server_backend"
+    },
+    "https_frontend": {
+      "address": "0.0.0.0",
+      "port": 443,
+      "backend": "proxied_http_server_backend",
+      "certificates": {
+        "key": "/certs/key.pem",
+        "cert": "/certs/cert.pem"
+      },
+      "hostname": "farsnap.link",
+      "uri_path_prefix": "/"
+    }
+
+  },
+
+  "backends": {
+    "ios_backend": {
+      "require": "./build/backends/iosbackend.js"
+    },
+    "android_backend": {
+      "require": "./build/backends/androidbackend.js"
+    },
+    "dummy_backend": {
+      "require": "./build/backends/dummybackend.js"
+    },
+    "proxied_http_server_backend": {
+      "servers": [
+        "http://127.0.0.1:8080"
+      ]
+    }
+
+  }
+}

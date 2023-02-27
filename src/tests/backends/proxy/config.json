@@ -1,0 +1,36 @@
+{
+    "frontends": {
+        "proxy": {
+            "address": "0.0.0.0",
+            "port": 8080,
+            "uri_path_prefix": "/",
+            "backend": "proxy"
+        },
+        "b1": {
+            "address": "0.0.0.0",
+            "port": 8081,
+            "uri_path_prefix": "/",
+            "backend": "b1"
+        },
+        "b2": {
+            "address": "0.0.0.0",
+            "port": 8082,
+            "uri_path_prefix": "/",
+            "backend": "b2"
+        }
+    },
+    "backends": {
+        "proxy": {
+            "servers": [
+                "http://127.0.0.1:8081/",
+                "http://127.0.0.1:8082/"
+            ]
+        },
+        "b1": {
+            "require": "./backend1.js"
+        },
+        "b2": {
+            "require": "./backend2.js"
+        }
+    }
+}

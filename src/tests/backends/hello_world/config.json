@@ -1,0 +1,15 @@
+{
+    "frontends": {
+        "hello_world": {
+            "address": "0.0.0.0",
+            "port": 8001,
+            "uri_path_prefix": "/",
+            "backend": "hello_world"
+        }
+    },
+    "backends": {
+        "hello_world": {
+            "require": "./backend.js"
+        }
+    }
+}

@@ -1,0 +1,24 @@
+{
+    "frontends": {
+        "unreachable": {
+            "address": "0.0.0.0",
+            "port": 8005,
+            "uri_path_prefix": "/regular",
+            "backend": "b_regular"
+        },
+        "404": {
+            "address": "0.0.0.0",
+            "port": 8005,
+            "uri_path_prefix": "/",
+            "backend": "b_404"
+        }
+    },
+    "backends": {
+        "b_regular": {
+            "require": "./backend_regular.js"
+        },
+        "b_404": {
+            "require": "./backend_404.js"
+        }
+    }
+}
