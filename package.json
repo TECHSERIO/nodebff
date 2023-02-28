@@ -1,6 +1,8 @@
 {
   "name": "nodebff",
   "version": "1.0.0",
+  "main": "./build/bff.js",
+  "bin": "./build/bin.js",
   "scripts": {
     "debug": "node ./build/tests/index.js"
   },
