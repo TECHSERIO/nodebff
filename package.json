@@ -2,7 +2,9 @@
   "name": "nodebff",
   "version": "1.0.0",
   "main": "./build/bff.js",
-  "bin": "./build/bin.js",
+  "bin": {
+    "nodebff": "build/bin.js"
+  },
   "scripts": {
     "debug": "node ./build/tests/index.js"
   },
@@ -18,5 +20,22 @@
     "@types/express-http-proxy": "^1.6.3",
     "@types/vhost": "^3.0.4",
     "testlib": "git+ssh://git@git.farsnap.nu/TECHSERIO/farsnaptestlib.git"
-  }
+  },
+  "description": "The TECHSERIO Node.js BFF library and BFF server",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TECHSERIO/nodebff.git"
+  },
+  "keywords": [
+    "nodebff",
+    "bff",
+    "nodejs",
+    "techserio"
+  ],
+  "author": "Mattias Hansson",
+  "license": "LGPL-2.1-only",
+  "bugs": {
+    "url": "https://github.com/TECHSERIO/nodebff/issues"
+  },
+  "homepage": "https://github.com/TECHSERIO/nodebff#readme"
 }
