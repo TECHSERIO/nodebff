@@ -1,22 +1,153 @@
+
 # NodeBFF
-The TECHSERIO Node.js BFF library
-- [Concept](#concept)
-- [Setup](#setup)
-  - [Frontend](#frontend)
-  - [Backend](#backend)
+
+The TECHSERIO Node.js BFF Library
+
+- [Quick Setup](#quick-setup)
+- [Frontend configuration](#frontend-configuration)
+- [Backend configuration](#backend-configuration)
     - [Backend APIs](#backend-apis)
     - [Proxying](#backend-proxying)
 - [Live reload](#live-reload)
 
+# Quick setup
+To start out with NodeBFF you essentially only need a configuration file that is used to initialize the BFF server.
+Create a file named `bffconfig.json` in your project's root directory and configure a basic frontend and a backend:
+```json
+{
+    "frontends": {
+        "your-frontend": {
+            "address": "0.0.0.0",
+            "port": 8080,
+            "backend": "your-backend"
+        }
+    },
+    "backends": {
+        "your-backend": {
+            "require": "./backend.js"
+        }
+    }
+}
+```
+Take a look at the configuration above.
+A `"frontend"` object holds some basic configuration like the network interface and port used by an HTTP server, along with a `"backend"` property that points to `"your-backend"`. This configuration will create a single HTTP server listening on `0.0.0.0:8080` and point all the requests to your backend.
 
-# Concept
-NodeBFF is divided into the concept of "backend" and "frontend".  
-A frontend is the configuration that exposes resources on the network.  
-A backend is the code that handles proxying, APIs or in general - network requests.
+Now let's create a basic `backend.js` file that will handle our requests.
+```js
+const { Router } = require("express")
 
-# Setup
+module.exports = {
+    buildRouter: () => {
+        return Router()
+            .get("/", (req, res) => {
+                res.send("hello world!")
+            })
+    }
+}
+```
+A backend file has to export a `buildRouter` method that returns an express router which is then used to handle requests coming from the frontend.
 
-## Frontend
+You can run multiple frontends with their respective backends on the same address/port and use the `"uri_path_prefix"` prop the frontend configuration to direct requests to desired backends based on the start of the URL.
+```json
+{
+
+    "frontends": {
+        "frontend-1": {
+            "address": "0.0.0.0",
+            "port": 8080,
+            "backend": "db",
+            "uri_path_prefix": "/db/"
+        },
+        "frontend-2": {
+            "address": "0.0.0.0",
+            "port": 8080,
+            "backend": "api",
+            "uri_path_prefix": "/api/"
+        }
+    },
+    "backends": {
+        ...
+    }
+}
+```
+
+
+# --- OLD ---
+
+
+# NodeBFF
+
+The TECHSERIO Node.js BFF Library
+
+- [Quick Setup](#quick-setup)
+- [Frontend configuration](#frontend-configuration)
+- [Backend configuration](#backend-configuration)
+    - [Backend APIs](#backend-apis)
+    - [Proxying](#backend-proxying)
+- [Live reload](#live-reload)
+
+# Quick setup
+To start out with NodeBFF you essentially only need a configuration file that is used to initialize the BFF server.
+Create a file named `bffconfig.json` in your project's root directory and configure a basic frontend and a backend:
+```json
+{
+    "frontends": {
+        "your-frontend": {
+            "address": "0.0.0.0",
+            "port": 8080,
+            "backend": "your-backend"
+        }
+    },
+    "backends": {
+        "your-backend": {
+            "require": "./backend.js"
+        }
+    }
+}
+```
+Take a look at the configuration above.
+A `"frontend"` object holds some basic configuration like the network interface and port used by an HTTP server, along with a `"backend"` property that points to `"your-backend"`. This configuration will create a single HTTP server listening on `0.0.0.0:8080` and point all the requests to your backend.
+
+Now let's create a basic `backend.js` file that will handle our requests.
+```js
+const { Router } = require("express")
+
+module.exports = {
+    buildRouter: () => {
+        return Router()
+            .get("/", (req, res) => {
+                res.send("hello world!")
+            })
+    }
+}
+```
+A backend file has to export a `buildRouter` method that returns an express router which is then used to handle requests coming from the frontend.
+
+You can run multiple frontends with their respective backends on the same address/port and use the `"uri_path_prefix"` prop the frontend configuration to direct requests to desired backends based on the start of the URL.
+```json
+{
+
+    "frontends": {
+        "frontend-1": {
+            "address": "0.0.0.0",
+            "port": 8080,
+            "backend": "db",
+            "uri_path_prefix": "/db/"
+        },
+        "frontend-2": {
+            "address": "0.0.0.0",
+            "port": 8080,
+            "backend": "api",
+            "uri_path_prefix": "/api/"
+        }
+    },
+    "backends": {
+        ...
+    }
+}
+```
+
+## Frontend Configuration
 Configuring a frontend requires information needed by the HTTP(s) server, along with configuration specific to the BFF server itself.
 Configuration includes:
 - `address` - Network interface to listen on, eg. `0.0.0.0` - to listen on all interfaces.
@@ -51,7 +182,7 @@ It's worth to note that many frontends can be running directly on the same netwo
 }
 ```
 
-## Backend
+## Backend Configuration
 A backend is what handles the actual server logic - the logic you specify. It's either as a proxy or a custom API.
 
 - `address` - Specifies which network interface the frontend is running.
