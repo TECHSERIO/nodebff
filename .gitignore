@@ -29,6 +29,9 @@ bower_components
 # TypeScript Target DIR
 build
 
+# TypeScript Target DIR
+types
+
 # Editors
 .idea
 *.iml
