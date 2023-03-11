@@ -2,13 +2,13 @@ import * as https from 'https';
 import * as http from 'http';
 import express from 'express';
 import vhost from 'vhost';
-import {promises as fs} from 'fs';
+import fss, {promises as fs} from 'fs';
 import helmet from 'helmet';
 import proxy from 'express-http-proxy';
-import path from 'path';
 import bodyParser from "body-parser";
+import path from "path";
 
-class HttpServer {
+export class HttpServer {
     static _servers: HttpServer[] = [];
 
     app: express.Express;
@@ -136,7 +136,7 @@ class HttpServer {
 }
 
 
-class Backend {
+export class Backend {
 
     constructor(
         public name: string,
@@ -161,7 +161,7 @@ class Backend {
 
 }
 
-class Frontend {
+export class Frontend {
     constructor(
         public name: string,
         public address: string,
@@ -175,25 +175,16 @@ class Frontend {
 }
 
 
-class BFFConfig {
+export class BFFConfig {
     //filename: string;
-    private executionPath: string;
     private backends: Backend[];
     private frontends: Frontend[];
     private configAsJSON: string;
 
-    constructor(configAsJSON: string, executionPath: string) {
-        //this.filename = filename;
-        this.executionPath = executionPath
+    constructor(configAsJSON: string) {
         this.configAsJSON = configAsJSON
         this.backends = [];
         this.frontends = [];
-    }
-
-    public getPathRelativeToConfig(location: string) {
-        // Use process.cwd() as base because relative paths tend to cause issues
-        if (path.isAbsolute(location)) return path.join(process.cwd(), location)
-        return path.join(this.executionPath, location)
     }
 
     public async loadConfig() {
@@ -295,14 +286,12 @@ class BFFConfig {
             console.log(`Backend name: ${bName}`);
 
             if (bConf.require) {
-                const backend = this.getPathRelativeToConfig(bConf.require)
-                this.backends.push(new Backend(bName, (require(backend)).buildRouter));
+                this.backends.push(new Backend(bName, (require(path.join(process.cwd(), bConf.require))).buildRouter));
             } else if (bConf.servers) {
                 this.backends.push(new Backend(bName, null, bConf.servers));
             } else {
                 console.log(`BFFConfig.loadBackends() - no file or servers specified for ${bName}`);
             }
-
         }
     }
 
@@ -313,31 +302,17 @@ class BFFConfig {
     }
 }
 
-async function startConfigApp(configFile: string) {
+export async function startBFFApp(configJSON: string, configPort: number = 3000) {
 
-    const executionPath = path.dirname(configFile)
-    let configAsJSON = await fs.readFile(configFile, 'utf8')
-    const c = new BFFConfig(configAsJSON, executionPath);
+    const c = new BFFConfig(configJSON);
     await c.loadConfig();
-
     const configApp = express();
     configApp.use(bodyParser.json());
-
-    configApp.get('/reloadconfig', async (req, res) => {
-        try {
-            let configAsJSON = await fs.readFile(configFile, 'utf8')
-            const c = new BFFConfig(configAsJSON, executionPath);
-            await c.loadConfig();
-        } catch (e) {
-            return res.status(500).send(e.message);
-        }
-        return res.send('OK');
-    });
 
     configApp.post('/reloadconfig', async (req, res) => {
         try {
             let configAsJSON = JSON.stringify(req.body)
-            const c = new BFFConfig(configAsJSON, executionPath);
+            const c = new BFFConfig(configAsJSON);
             await c.loadConfig();
         } catch (e) {
             return res.status(500).send(e.message);
@@ -346,7 +321,6 @@ async function startConfigApp(configFile: string) {
     });
 
     return new Promise((resolve, reject) => {
-        const configPort = 3000
         const serv = http.createServer(configApp)
         serv.on('error', (e) => {
             reject(e)
@@ -358,11 +332,7 @@ async function startConfigApp(configFile: string) {
     });
 }
 
-export async function main(configFile = '../bffconfig.json') {
-    await startConfigApp(configFile)
-}
-
 if (typeof module !== 'undefined' && require.main === module) {
-    main()
+    const configJSON = fss.readFileSync('../bffconfig.json', 'utf8')
+    startBFFApp(configJSON)
 }
-

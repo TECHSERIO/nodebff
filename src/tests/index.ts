@@ -1,6 +1,5 @@
 
 // Generals ===============================================
-import path from 'path'
 import { createBFF } from './daemon'
 
 // Test lib ===============================================
@@ -97,10 +96,11 @@ t.test(`500_exception`, `Throw an exception in the backend and recieve 500 repon
     c.cleanup(() => killBFF())
 
     const req = await fetch('http://127.0.0.1:8005/')
-    const res = await req.text()
+    //const res = await req.text()
     c.expect(`500 response code`, req.status, 500)
 
 })
+
 
 t.test(`proxy`, `Proxy request to two different servers`, async c => {
 

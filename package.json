@@ -2,6 +2,7 @@
   "name": "nodebff",
   "version": "1.0.0",
   "main": "./build/bff.js",
+  "types": "./types/bff.d.ts",
   "bin": {
     "nodebff": "build/bin.js"
   },

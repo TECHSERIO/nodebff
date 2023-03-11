@@ -11,9 +11,13 @@
     "rootDir": "src",
     "sourceMap": true,
     "target": "es2017",
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "declaration": true,
+    "declarationDir": "types"
   },
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "./types/**/*",
+    "./built/**/*" // This is what fixed it!
   ]
 }
