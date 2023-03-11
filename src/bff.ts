@@ -302,7 +302,7 @@ export class BFFConfig {
     }
 }
 
-export async function startBFFApp(configJSON: string, configPort: number = 3000) {
+export async function BFFApp(configJSON: string, configPort: number = 3000) {
 
     const c = new BFFConfig(configJSON);
     await c.loadConfig();
@@ -334,5 +334,5 @@ export async function startBFFApp(configJSON: string, configPort: number = 3000)
 
 if (typeof module !== 'undefined' && require.main === module) {
     const configJSON = fss.readFileSync('../bffconfig.json', 'utf8')
-    startBFFApp(configJSON)
+    BFFApp(configJSON)
 }
