@@ -158,7 +158,6 @@ export class Backend {
                 if (hostIndex >= this.servers.length) {
                     hostIndex = 0;
                 }
-                console.log(`hostIndex: ${hostIndex}`)
                 return this.servers[hostIndex++];
             };
             rbf = proxy(getRandomHost, {
@@ -296,8 +295,7 @@ export class BFFConfig {
     loadBackends(config: any) {
         for (const [bName, bConf] of Object.entries(<Backend>config.backends)) {
 
-            console.log(`Backend name: ${bName}`);
-
+            //console.log(`Backend name: ${bName}`);
             if (bConf.require) {
                 this.backends.push(new Backend(bName, (require(path.join(process.cwd(), bConf.require))).buildRouter));
             } else if (bConf.servers) {
