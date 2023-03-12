@@ -167,6 +167,22 @@ Note that newer versions of the HTTP protocol will attempt to reuse the same con
 }
 ```
  
+To simplify testing and some special cases we additionally can make nodebff ignore the validity of the SSL certificate in the case of https server(s) using the reject_unauthorized property.  
+
+```json
+{
+  "backends": {
+    "backend_name": {
+      "reject_unauthorized": false,
+        "servers": [
+          "128.0.0.1"
+        ]
+    }
+  }
+}
+```
+
+
 
 # SSL
 To test out HTTPS quickly without requiring contact with a certificate authority, you can generate an SSL certificate yourself using [node-forge](https://www.npmjs.com/package/node-forge), or in the case below, [selfsigned](https://www.npmjs.com/package/selfsigned) npm package.

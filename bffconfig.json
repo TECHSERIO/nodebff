@@ -28,15 +28,16 @@
 
   "backends": {
     "ios_backend": {
-      "require": "./build/backends/iosbackend.js"
+      "require": "./backends/iosbackend.js"
     },
     "android_backend": {
-      "require": "./build/backends/androidbackend.js"
+      "require": "./backends/androidbackend.js"
     },
     "dummy_backend": {
-      "require": "./build/backends/dummybackend.js"
+      "require": "./backends/dummybackend.js"
     },
     "proxied_http_server_backend": {
+      "reject_unauthorized": true,
       "servers": [
         "http://127.0.0.1:8080"
       ]

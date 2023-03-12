@@ -141,7 +141,8 @@ export class Backend {
     constructor(
         public name: string,
         public routerBuilderFunc: (() => any) | null = null,
-        public servers: any[] = []
+        public servers: any[] = [],
+        public rejectUnauthorized: boolean = false //allow self-signed https certificates
     ) {
     }
 
@@ -150,11 +151,23 @@ export class Backend {
         if (this.routerBuilderFunc) {
             rbf = this.routerBuilderFunc();
         } else {
+            let hostIndex = 0;
             const getRandomHost = () => {
-                const hostIndex = Math.floor(Math.random() * this.servers.length);
-                return this.servers[hostIndex];
+                //const hostIndex = Math.floor(Math.random() * this.servers.length);
+                // hostIndex used to implement round-robin.
+                if (hostIndex >= this.servers.length) {
+                    hostIndex = 0;
+                }
+                console.log(`hostIndex: ${hostIndex}`)
+                return this.servers[hostIndex++];
             };
-            rbf = proxy(getRandomHost, {memoizeHost: false});
+            rbf = proxy(getRandomHost, {
+                proxyReqOptDecorator: (proxyReqOpts: any) => {
+                    proxyReqOpts.rejectUnauthorized = this.rejectUnauthorized;
+                    return proxyReqOpts;
+                },
+                memoizeHost: false
+            });
         }
         return rbf;
     }
@@ -288,7 +301,7 @@ export class BFFConfig {
             if (bConf.require) {
                 this.backends.push(new Backend(bName, (require(path.join(process.cwd(), bConf.require))).buildRouter));
             } else if (bConf.servers) {
-                this.backends.push(new Backend(bName, null, bConf.servers));
+                this.backends.push(new Backend(bName, null, bConf.servers, bConf.reject_unauthorized));
             } else {
                 console.log(`BFFConfig.loadBackends() - no file or servers specified for ${bName}`);
             }
