@@ -142,7 +142,7 @@ export class Backend {
         public name: string,
         public routerBuilderFunc: (() => any) | null = null,
         public servers: any[] = [],
-        public rejectUnauthorized: boolean = false //allow self-signed https certificates
+        public rejectUnauthorized: boolean = true //Default: Reject self-signed https certificates
     ) {
     }
 

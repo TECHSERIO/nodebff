@@ -37,7 +37,6 @@
       "require": "./backends/dummybackend.js"
     },
     "proxied_http_server_backend": {
-      "reject_unauthorized": true,
       "servers": [
         "http://127.0.0.1:8080"
       ]
