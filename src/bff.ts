@@ -317,6 +317,7 @@ export async function BFFApp(configJSON: string, configPort: number = 3000) {
 
     const c = new BFFConfig(configJSON);
     await c.loadConfig();
+    let lastGoodConfig = configJSON;
     const configApp = express();
     configApp.use(bodyParser.json());
 
@@ -325,11 +326,17 @@ export async function BFFApp(configJSON: string, configPort: number = 3000) {
             let configAsJSON = JSON.stringify(req.body)
             const c = new BFFConfig(configAsJSON);
             await c.loadConfig();
+            lastGoodConfig = JSON.stringify(req.body, null, 2);
         } catch (e) {
-            return res.status(500).send(e.message);
+            return res.status(400).send(e.message);
         }
         return res.send('OK');
     });
+
+    configApp.get('/config', async (req, res) => {
+        return res.contentType('application/json').send(lastGoodConfig);
+    });
+
 
     return new Promise((resolve, reject) => {
         const serv = http.createServer(configApp)
