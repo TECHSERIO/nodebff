@@ -8,3 +8,5 @@ build/tests/
 
 # Maps
 build/*.js.map
+
+.idea/
