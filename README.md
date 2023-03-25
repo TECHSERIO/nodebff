@@ -129,17 +129,17 @@ A backend is what handles the actual server logic - the logic you specify. It's 
 
 Note that a backend can only either load a custom file using `require` or serve as a proxy using the `servers` prop.
 
-This is what all of the properties descrived above look like in JSON:
+This is what all the properties described above look like in JSON:
 ```json
 {
   "custom-backend": {
     "require": "./backend.js"
   },
-  "proxy": {
+  "proxy-backend": {
     "servers": [
       "128.0.0.1",
       "128.0.0.2",
-      "128.0.0.3",
+      "128.0.0.3"
     ]
   }
 }
@@ -159,14 +159,27 @@ Note that newer versions of the HTTP protocol will attempt to reuse the same con
         "servers": [
           "128.0.0.1",
           "128.0.0.2",
-          "128.0.0.3",
+          "128.0.0.3"
         ]
-    },
-    ...
+    }
   }
 }
 ```
- 
+
+Proxied server can point https domains, like this
+
+```json
+{
+  "backends": {
+    "backend_name": {
+        "servers": [
+          "https://farsnap.com"
+        ]
+    }
+  }
+}
+```
+
 To simplify testing and some special cases we additionally can make nodebff ignore the validity of the SSL certificate in the case of https server(s) using the reject_unauthorized property.  
 
 ```json
@@ -175,7 +188,7 @@ To simplify testing and some special cases we additionally can make nodebff igno
     "backend_name": {
       "reject_unauthorized": false,
         "servers": [
-          "128.0.0.1"
+          "https://128.0.0.1"
         ]
     }
   }
