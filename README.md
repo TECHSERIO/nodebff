@@ -213,6 +213,23 @@ Save the SSL cert/key pair to their respective files and load them in the fronte
 }
 ```
 
+Using the absolute_path property we can load the certificates from a specific place in the file system:
+```json
+{
+  "frontend_name": {
+    "address": "0.0.0.0",
+    "port": 80,
+    "uri_path_prefix": "/api/",
+    "certificates": {
+      "key": "/etc/certs/key.pem",
+      "cert": "/etc/certs/cert.pem",
+      "absolute_path": true
+    },
+    ...
+  }
+}
+```
+
 # Live reload
 
 ## Reloading config from original config file:

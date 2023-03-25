@@ -18,13 +18,13 @@ export class HttpServer {
     private constructor(
         public address: string = '127.0.0.1',
         public port: number = 8080,
-        public certificates: { key: string; cert: string } | null = null,
+        public certificates: FrontendCertificates,
     ) {
     }
 
     private static async _CreateServer(address: string,
                                        port: number,
-                                       certificates: { key: string; cert: string } | null = null,
+                                       certificates: FrontendCertificates,
     ): Promise<HttpServer> {
         const newServ = new HttpServer(address, port, certificates)
 
@@ -67,7 +67,7 @@ export class HttpServer {
     private static async _EnsureServer(
         address: string,
         port: number,
-        certificates: { key: string; cert: string } | null = null,
+        certificates: FrontendCertificates,
     ): Promise<HttpServer> {
         if (certificates) {
             if (!certificates.key) {
@@ -100,9 +100,13 @@ export class HttpServer {
 
         let certificateData = null;
         if (certificates) {
+            let pathPrefix = __dirname
+            if (certificates.absolute_path) {
+                pathPrefix = ''
+            }
             certificateData = {
-                key: await fs.readFile(__dirname + certificates.key, 'utf8'),
-                cert: await fs.readFile(__dirname + certificates.cert, 'utf8'),
+                key: await fs.readFile(pathPrefix + certificates.key, 'utf8'),
+                cert: await fs.readFile(pathPrefix + certificates.cert, 'utf8'),
             };
         }
         return HttpServer._CreateServer(address, port, certificateData);
@@ -111,7 +115,7 @@ export class HttpServer {
     static async GetNewBaseRouter(
         address: string,
         port: number,
-        certificates: { key: string; cert: string } | null,
+        certificates: FrontendCertificates,
     ): Promise<express.Router> {
         const server = await HttpServer._EnsureServer(
             address,
@@ -173,12 +177,19 @@ export class Backend {
 
 }
 
+
+type FrontendCertificates = {
+    key: string;
+    cert: string;
+    absolute_path?: boolean;
+} | null;
+
 export class Frontend {
     constructor(
         public name: string,
         public address: string,
         public port: number,
-        public certificates: { key: string; cert: string },
+        public certificates: FrontendCertificates,
         public hostname: string,
         public uri_path_prefix: string = '/',
         public backend: string = ''
