@@ -156,7 +156,7 @@ export class Backend {
             rbf = this.routerBuilderFunc();
         } else {
             let hostIndex = 0;
-            const getRandomHost = () => {
+            const getNextHost = () => {
                 //const hostIndex = Math.floor(Math.random() * this.servers.length);
                 // hostIndex used to implement round-robin.
                 if (hostIndex >= this.servers.length) {
@@ -164,13 +164,15 @@ export class Backend {
                 }
                 return this.servers[hostIndex++];
             };
-            rbf = proxy(getRandomHost, {
+            rbf = proxy(getNextHost, {
                 proxyReqOptDecorator: (proxyReqOpts: any) => {
                     proxyReqOpts.rejectUnauthorized = this.rejectUnauthorized;
                     return proxyReqOpts;
                 },
-                memoizeHost: false,
-                preserveHostHdr: true
+                proxyReqPathResolver: function(req) {
+                    return req.originalUrl;
+                },
+                memoizeHost: false
             });
         }
         return rbf;
