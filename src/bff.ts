@@ -169,7 +169,8 @@ export class Backend {
                     proxyReqOpts.rejectUnauthorized = this.rejectUnauthorized;
                     return proxyReqOpts;
                 },
-                memoizeHost: false
+                memoizeHost: false,
+                preserveHostHdr: true
             });
         }
         return rbf;
